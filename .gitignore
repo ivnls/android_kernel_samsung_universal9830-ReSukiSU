@@ -131,3 +131,9 @@ all.config
 
 # Kdevelop4
 *.kdev4
+
+# Local build artifacts
+/out/
+*.orig
+*.rej
+build*.log
