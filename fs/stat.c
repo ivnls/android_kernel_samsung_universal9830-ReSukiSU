@@ -391,6 +391,9 @@ SYSCALL_DEFINE2(newfstat, unsigned int, fd, struct stat __user *, statbuf)
 	if (!error)
 		error = cp_new_stat(&stat, statbuf);
 
+#ifdef CONFIG_KSU_MANUAL_HOOK
+	ksu_handle_newfstat_ret(&fd, &statbuf);
+#endif
 	return error;
 }
 
@@ -689,12 +692,6 @@ COMPAT_SYSCALL_DEFINE2(newfstat, unsigned int, fd,
 
 	if (!error)
 		error = cp_compat_stat(&stat, statbuf);
-
-	#ifdef CONFIG_KSU_MANUAL_HOOK
-		// Cast to avoid -Wincompatible-pointer-types
-		ksu_handle_newfstat_ret(&fd, (struct stat __user **)&statbuf);
-	#endif
-
 	return error;
 }
 #endif
