@@ -268,7 +268,13 @@ Checagens do BakaSU durante o build (`drivers/kernelsu/`):
 
 Compilação de `fs/stat.o`, `fs/exec.o`, `fs/open.o`, `kernel/reboot.o`, `security/selinux/` e `drivers/kernelsu/`: **sem erros e sem warnings**.
 
-**Build completo (`Image`, com LTO):** _em andamento; o resultado será adicionado aqui._
+**Build completo (`make Image`, LTO Clang):** ✅ **sucesso** (exit 0). O link do `vmlinux` não teve símbolos indefinidos e o `arch/arm64/boot/Image` saiu com 44.693.520 bytes.
+
+```
+Linux version 4.19.325-ivnls-BakaSU-g50528d7278cb (Ubuntu clang version 18.1.3, Ubuntu LLD 18.1.3) #1 SMP PREEMPT
+```
+
+Confirmação no binário (`llvm-objdump` do `vmlinux`): `__arm64_sys_newfstat` agora chama `ksu_handle_newfstat_ret`, e `__arm64_compat_sys_newfstat` não chama mais. Todos os `ksu_handle_*` (`execveat`, `faccessat`, `stat`, `newfstat_ret`, `fstat64_ret`, `sys_reboot`) aparecem no `System.map`.
 
 **Ainda falta testar no aparelho.** A versão anterior (ReSukiSU) foi validada pelo autor no SM-N986B (c2s) com Lineage 23.2. Esta combinação (BakaSU + Lineage 24.0) ainda precisa de: boot, `su` pelo manager, `ksud` subindo (módulos / `post-fs-data`) e o `init.rc` injetado (é o que a correção 4.1 afeta).
 
